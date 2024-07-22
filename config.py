@@ -238,8 +238,7 @@ class Config(object):
         return None
 
     def get_telegram_domain(self):
-        telegram_domain = (self.get_config('laboratory') or {}).get("telegram_domain", "https://api.telegram.org")
+        telegram_domain = (self.get_config('laboratory') or {}).get("telegram_domain") or "https://api.telegram.org"
         if telegram_domain and telegram_domain.endswith("/"):
             telegram_domain = telegram_domain[:-1]
-        print(f"【Config】设置 Telegram Bot Api 为 {telegram_domain}")
         return telegram_domain

@@ -275,8 +275,8 @@ class Jackett(_IPluginModule):
                 return []
             if not ret.json():
                 return []
-            indexers = [IndexerConf({"id": f'{v["id"]}-jackett',
-                                 "name": f'{v["name"]}(Jackett)',
+            indexers = [IndexerConf({"id": f'{v["id"]}-{self.module_name}',
+                                 "name": f'【{self.module_name}】{v["name"]}',
                                  "domain": f'{self._host}/api/v2.0/indexers/{v["id"]}/results/torznab/',
                                  "public": True if v['type'] == 'public' else False,
                                  "builtin": False,
@@ -352,17 +352,6 @@ class Jackett(_IPluginModule):
                     enclosure = DomUtils.tag_value(item, "enclosure", "url", default="")
                     if not enclosure:
                         continue
-                    # if enclosure is start with http, then try to download it as torrent file and convert it to magnet
-                    if enclosure.startswith("http"):
-                        self.info(f"【{self.module_name}】开始下载种子文件并转换为磁力链接：{enclosure}")
-                        try:
-                            torrent_file = RequestUtils(timeout=10).get_res(enclosure)
-                            if torrent_file:
-                                magnet_link = Torrent.binary_data_to_magnet_link(torrent_file.content)
-                                enclosure = magnet_link
-                        except Exception as e:
-                            ExceptionUtils.exception_traceback(e)
-                            pass
                     # 描述
                     description = DomUtils.tag_value(item, "description", default="")
                     # 种子大小
